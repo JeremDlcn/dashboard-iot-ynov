@@ -1,0 +1,51 @@
+:root {
+    --main-font: #000;
+    --bg-color: #FFF;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,body {
+    scroll-behavior: smooth;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--main-font);
+    font-family: sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: var(--main-font);
+}
+
+/* table style */
+#robots {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  #robots td, #robots th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #robots tr:nth-child(even){background-color: #f2f2f2;}
+  
+  #robots tr:hover {background-color: #ddd;}
+  
+  #robots th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+  }
