@@ -49,3 +49,18 @@ a {
     background-color: #04AA6D;
     color: white;
   }
+
+
+  .edit,
+  .delete {
+    border: 0;
+    padding: .5rem;
+    margin-right: 2rem;
+  }
+
+  .edit {
+    background-color: #1de39a;
+  }
+  .delete {
+    background-color: #ffa3a3;
+  }
