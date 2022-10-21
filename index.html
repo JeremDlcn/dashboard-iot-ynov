@@ -8,46 +8,126 @@
   <title>Dashboard de Iot</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+  <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
 </head>
 
 <body>
-  <table id="robots">
-    <tr>
-      <th>Number</th>
-      <th>Name</th>
-      <th>Date</th>
-      <th>Contrôles</th>
-    </tr>
-  </table>
-
+  <div id='map'></div>
   <main id="app">
-    {{storage}}
-  </main>
-  <script>
-    const { createApp } = Vue
 
+    <table id="robots">
+      <thead>
+        <tr>
+          <th v-for="head in heads" :key="head">{{ head }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in storage" :key="item">
+          <td v-for="(element, key, index) in item" :key="element" v-show="key !=='coords' ">{{ element }}</td>
+          <td>
+            <button class="edit">Modifier</button>
+            <button class="delete" @click="deleteMarker(item.number)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button id="add" @click="openPopup">Ajouter un marqueur</button>
+    <div class="popup" v-if="IsPopupOpen">
+      <p class="popup-title">{{ titlePopup }}</p>
+      <div>
+        <h3>Nom de l'appareil</h3>
+        <input type="text" class="popup-input" v-model="input">
+      </div>
+      <div class="popup-coords">
+        <div>
+          <h3>Latitude</h3>
+          <input type="text" class="popup-input" v-model="latitude">
+        </div>
+        <div>
+          <h3>Longitude</h3>
+          <input type="text" class="popup-input" v-model="longitude">
+        </div>
+      </div>
+      <button class="popup-submit" @click="createMarker">Enregistrer</button>
+    </div>
+  </main>
+
+  <script>
+    // Map
+    let map = new maplibregl.Map({
+      container: 'map', // container id
+      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      center: [0, 0], // starting position [lng, lat]
+      zoom: 1 // starting zoom
+    });
+
+    // Vue
+    const { createApp } = Vue
     createApp({
       data: () => ({
+        input: '',
+        longitude: 0,
+        latitude: 0,
+        titlePopup: 'Création d\'un marqueur',
+        IsPopupOpen: false,
+        heads: ['Number', 'Name', 'Date', 'Contrôles'],
         storage: [
           {
             number: 1,
             name: 'D3',
-            date: '2020-11-26'
+            date: '2020-11-26',
+            coords: [5.026824428081838, 47.314551189358205]
           },
           {
             number: 2,
             name: 'Robot',
-            date: '2020-11-26'
+            date: '2020-11-26',
+            coords: [6.48757484232033, 46.392316983354625]
           },
           {
             number: 3,
             name: 'Appareil',
-            date: '2020-11-26'
-          },
-
+            date: '2020-11-26',
+            coords: [5.371247778419813, 43.28408274884388]
+          }
         ]
-      })
+      }),
+      methods: {
+        addMapMarkers: (coords) => {
+          new maplibregl.Marker()
+            .setLngLat(coords)
+            .addTo(map);
+        },
+        deleteMarker: function (id) {
+          this.storage = this.storage.filter(item => item.number !== id)
+        },
+        openPopup: function () {
+          this.IsPopupOpen = true;
+        },
+        createMarker: function () {
+          this.storage.push({
+            number: this.storage.length + 1,
+            name: this.input,
+            date: new Date().toISOString().slice(0, 10),
+            coords: [this.longitude, this.latitude]
+          })
+
+          this.addMapMarkers([this.longitude, this.latitude])
+
+          this.IsPopupOpen = false;
+        }
+      },
+      mounted() {
+        this.storage.forEach(element => {
+          if (element.coords) this.addMapMarkers(element.coords)
+        });
+      }
     }).mount('#app')
+
+
+
+
   </script>
 </body>
 
