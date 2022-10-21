@@ -1,21 +1,4 @@
-let storage = [
-    {
-        number: 1,
-        name: 'D3',
-        date: '2020-11-26'
-    },
-    {
-        number: 2,
-        name: 'Robot',
-        date: '2020-11-26'
-    },
-    {
-        number: 3,
-        name: 'Appareil',
-        date: '2020-11-26'
-    },
-    
-]
+
 
 // init line data
 for (const item of storage) {

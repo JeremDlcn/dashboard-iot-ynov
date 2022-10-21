@@ -2,23 +2,53 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Iot</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Iot</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
-    <table id="robots">
-        <tr>
-          <th>Number</th>
-          <th>Name</th>
-          <th>Date</th>
-          <th>Contrôles</th>
-        </tr>
-      </table>
-    <script src="app.js"></script>
+  <table id="robots">
+    <tr>
+      <th>Number</th>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Contrôles</th>
+    </tr>
+  </table>
+
+  <main id="app">
+    {{storage}}
+  </main>
+  <script>
+    const { createApp } = Vue
+
+    createApp({
+      data: () => ({
+        storage: [
+          {
+            number: 1,
+            name: 'D3',
+            date: '2020-11-26'
+          },
+          {
+            number: 2,
+            name: 'Robot',
+            date: '2020-11-26'
+          },
+          {
+            number: 3,
+            name: 'Appareil',
+            date: '2020-11-26'
+          },
+
+        ]
+      })
+    }).mount('#app')
+  </script>
 </body>
 
 </html>
