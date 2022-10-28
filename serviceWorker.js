@@ -3,7 +3,6 @@ const assets = [
     "/",
     "/index.html",
     "/style.css",
-    "/js/app.js",
     "/favicon.ico",
     "/app.html",
     "/maplibre-gl.css",
