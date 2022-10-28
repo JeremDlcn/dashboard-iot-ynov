@@ -72,6 +72,7 @@
         titlePopup: 'Création d\'un marqueur',
         IsPopupOpen: false,
         heads: ['Number', 'Name', 'Date', 'Contrôles'],
+        markers: [],
         storage: [
           {
             number: 1,
@@ -94,13 +95,16 @@
         ]
       }),
       methods: {
-        addMapMarkers: (coords) => {
-          new maplibregl.Marker()
+        addMapMarkers: function(name, coords) {
+          this.markers.push(new maplibregl.Marker()
             .setLngLat(coords)
-            .addTo(map);
+            .setPopup(new maplibregl.Popup({ offset: 25 }) // add popups
+              .setHTML(`<h3>${name}</h3>`))
+            .addTo(map))
         },
         deleteMarker: function (id) {
           this.storage = this.storage.filter(item => item.number !== id)
+          this.markers[id - 1].remove()
         },
         openPopup: function () {
           this.IsPopupOpen = true;
@@ -120,7 +124,7 @@
       },
       mounted() {
         this.storage.forEach(element => {
-          if (element.coords) this.addMapMarkers(element.coords)
+          if (element.coords) this.addMapMarkers(element.name, element.coords)
         });
       }
     }).mount('#app')
