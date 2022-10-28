@@ -7,9 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard de Iot</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
-  <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.41/vue.global.min.js"></script>
+  <script src='maplibre-gl.js'></script>
+  <link href='maplibre-gl.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -52,7 +53,6 @@
       <button class="popup-submit" @click="createMarker">Enregistrer</button>
     </div>
   </main>
-
   <script>
     // Map
     let map = new maplibregl.Map({
@@ -66,6 +66,7 @@
     const { createApp } = Vue
     createApp({
       data: () => ({
+        infos: undefined,
         input: '',
         longitude: 0,
         latitude: 0,
@@ -80,22 +81,22 @@
             date: '2020-11-26',
             coords: [5.026824428081838, 47.314551189358205]
           },
-          {
-            number: 2,
-            name: 'Robot',
-            date: '2020-11-26',
-            coords: [6.48757484232033, 46.392316983354625]
-          },
-          {
-            number: 3,
-            name: 'Appareil',
-            date: '2020-11-26',
-            coords: [5.371247778419813, 43.28408274884388]
-          }
+          // {
+          //   number: 2,
+          //   name: 'Robot',
+          //   date: '2020-11-26',
+          //   coords: [6.48757484232033, 46.392316983354625]
+          // },
+          // {
+          //   number: 3,
+          //   name: 'Appareil',
+          //   date: '2020-11-26',
+          //   coords: [5.371247778419813, 43.28408274884388]
+          // }
         ]
       }),
       methods: {
-        addMapMarkers: function(name, coords) {
+        addMapMarkers: function (name, coords) {
           this.markers.push(new maplibregl.Marker()
             .setLngLat(coords)
             .setPopup(new maplibregl.Popup({ offset: 25 }) // add popups
@@ -120,19 +121,37 @@
           this.addMapMarkers(this.input, [this.longitude, this.latitude])
 
           this.IsPopupOpen = false;
+        },
+        findUserData: function (uid) {
+          const data = JSON.stringify({
+            collection: "devices-information",
+            database: "devices",
+            dataSource: "Cluster0",
+            filter: {
+              uid
+            }
+          });
+          fetch(`https://data.mongodb-api.com/app/data-pahdl/endpoint/data/v1/action/findOne`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json", "api-key": "uDJ7FaagORfPZLXUBDWPjt8ZjPGyYWTFGneOTHYX1FYKO8swmLESqK5o3mdIyDEO" },
+            body: data
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+            })
         }
       },
       mounted() {
         this.storage.forEach(element => {
           if (element.coords) this.addMapMarkers(element.name, element.coords)
         });
+        this.infos = JSON.parse(localStorage.getItem('infos'))
+        this.findUserData(this.infos.uid)
       }
     }).mount('#app')
-
-
-
-
   </script>
+
 </body>
 
 </html>

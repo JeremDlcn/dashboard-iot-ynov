@@ -1,7 +1,7 @@
 function initUI() {
     // 1) Create a new firebaseui.auth instance stored to our local variable ui
     const ui = new firebaseui.auth.AuthUI(firebase.auth())
-    
+
     // 2) These are our configurations.
     const uiConfig = {
         callbacks: {
@@ -11,7 +11,8 @@ function initUI() {
                     uid: authResult.user.uid,
                     name: authResult.user.displayName
                 }
-                console.log(info);
+                //add info to local storage
+                localStorage.setItem('infos', JSON.stringify(info));
                 return true
             },
             uiShown() {
