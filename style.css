@@ -63,7 +63,7 @@ a {
   .popup-submit {
     border: 0;
     padding: .5rem;
-    margin-right: 2rem;
+    margin-right: 1rem;
     cursor: pointer;
   }
   .popup-submit,
@@ -115,4 +115,21 @@ a {
   .popup-coords > div {
     margin-bottom: 2rem;
     margin-right: 1rem;
+  }
+
+
+  @media (max-width: 500px) {
+    #robots th {
+      font-size: 0.8rem;
+    }
+    #robots td {
+      font-size: 0.8rem;
+    }
+    tr > td:nth-child(3) {
+      white-space: nowrap;
+    }
+    .edit,
+    .delete {
+      margin-bottom: 0.5rem;
+    }
   }
