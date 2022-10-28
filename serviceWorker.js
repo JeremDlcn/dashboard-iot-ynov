@@ -1,12 +1,7 @@
 const staticDashboard = "dashboard-v1";
 const assets = [
-    "/",
     "/index.html",
     "/style.css",
-    "/favicon.ico",
-    "/app.html",
-    "/maplibre-gl.css",
-    "/maplibre-gl.js",
     "/auth.js",
     "/app.js",
 ];
