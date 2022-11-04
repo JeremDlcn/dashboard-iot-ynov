@@ -78,7 +78,7 @@
             coords: [122.82008054188914, 52.8562909503237],
             question: 'Quel est le nom de cette région ?',
             answer: 'Heilongjiang',
-            answers: ['Heilongjiang', 'Jilin', 'Liaoning', 'Shandong'],
+            answers: ['Jilin', 'Liaoning', 'Shandong', 'Heilongjiang'],
           },
           {
             number: 4,
@@ -86,7 +86,7 @@
             coords: [-155.5330412882434, 19.630411288775914],
             question: 'Quel est le nom de l\'île ?',
             answer: 'Hawaii',
-            answers: ['Hawaii', 'Oahu', 'Maui', 'Kauai'],
+            answers: ['Oahu', 'Maui', 'Hawaii', 'Kauai'],
           },
           {
             number: 5,
@@ -94,7 +94,7 @@
             coords: [-5.693433146528342, -15.955138183125245],
             question: 'Qui repose ici ?',
             answer: 'Napoléon',
-            answers: ['Napoléon', 'Marie-Antoinette', 'Louis XVI', 'Louis XVIII'],
+            answers: ['Marie-Antoinette', 'Napoléon', 'Louis XVI', 'Louis XVIII'],
           }
         ]
       }),
@@ -112,6 +112,8 @@
             .setPopup(new maplibregl.Popup({ offset: 25 }) // add popups
               .setHTML(`<h3>${name}</h3>`))
             .addTo(map))
+          map.setCenter(coords);
+          map.setZoom(3);
         },
         insertNextQuestion: function () {
           this.markers.forEach(marker => marker.remove())
@@ -140,7 +142,7 @@
               this.isButton = true;
             }, 1000);
           }
-            
+
         }
       },
       computed: {
