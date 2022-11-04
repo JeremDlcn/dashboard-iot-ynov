@@ -23,8 +23,8 @@
       <div class="answer-container">
         <div class="answer" v-for="answer in answers" :key="answer" @click="setAnswer(answer)">{{ answer }}</div>
       </div>
-      <button class="answer-submit" @click="submitQuestion" v-if="!isStart && !isEnd">Suite</button>
-      <button class="answer-submit" @click="startQuizz" v-if="isStart">Commencer</button>
+      <button class="answer-submit" @click="submitQuestion" v-if="!isStart && !isEnd && isButton">Suite</button>
+      <button class="answer-submit" @click="startQuizz" v-if="isStart && isButton">Commencer</button>
     </div>
   </main>
   <script src="js/app.js"></script>
@@ -45,14 +45,16 @@
         infos: undefined,
         isStart: true,
         isEnd: false,
+        isButton: true,
         question: 'Êtes vous prêts ?',
         answer: '',
-        answers: ['Oui', 'Non', 'Peut-être', 'Peut-être pas'],
+        answers: [],
         longitude: 0,
         latitude: 0,
         titlePopup: 'Quel est le nom de ce pays ?',
         counter: 0,
         markers: [],
+        score: 0,
         storage: [
           {
             number: 1,
@@ -98,7 +100,7 @@
       }),
       methods: {
         setAnswer: function (answer) {
-          this.answer = answer
+          this.answer = answer;
         },
         startQuizz: function () {
           this.insertNextQuestion();
@@ -114,24 +116,38 @@
         insertNextQuestion: function () {
           this.markers.forEach(marker => marker.remove())
           this.counter++;
-          console.log(this.counter, this.storage.length);
-          if (this.storage.length > this.counter) {
+          if (this.storage.length >= this.counter) {
             const item = this.storage[this.counter - 1];
             this.addMapMarkers(item.name, item.coords)
             this.question = item.question;
             this.answers = item.answers;
           } else {
             this.isEnd = true;
-            this.question = 'Bravo ! Vous avez terminé le quizz !';
+            this.question = `Bravo ! Vous avez terminé le quizz ! ${this.score} bonnes réponses sur ${this.storage.length}`;
             this.answers = [];
           }
         },
         submitQuestion: function () {
           this.answers = [];
           if (this.answer === this.storage[this.counter - 1].answer) {
+            this.score++;
             this.insertNextQuestion();
+          } else {
+            this.question = 'Mauvaise réponse !';
+            this.isButton = false;
+            setTimeout(() => {
+              this.insertNextQuestion();
+              this.isButton = true;
+            }, 1000);
           }
             
+        }
+      },
+      computed: {
+        classObject() {
+          return {
+            'select': this.isSelect
+          }
         }
       },
       mounted() {

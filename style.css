@@ -170,7 +170,7 @@ a {
     font-size: 0.8rem;
   }
 
-  .answer.select {
+  .answer:active {
     background-color: var(--accent-color);
   }
   .answer:hover {
