@@ -1,6 +1,7 @@
 :root {
     --main-font: #000;
     --bg-color: #FFF;
+    --accent-color: #04AA6D;
 }
 
 * {
@@ -132,4 +133,60 @@ a {
     .delete {
       margin-bottom: 0.5rem;
     }
+  }
+
+
+  /* Quizz */
+  .quizz-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem;
+  }
+
+  .question {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  .answer-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .answer {
+    margin: 1rem;
+    background-color: #ababab;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .12s ease-in;
+    font-size: 0.8rem;
+  }
+
+  .answer.select {
+    background-color: var(--accent-color);
+  }
+  .answer:hover {
+    transform: scale(0.95);
+  }
+
+  .answer-submit {
+    margin-top: 1rem;
+    background-color: var(--accent-color);
+    border: 0;
+    color: white;
+    padding: 1rem 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .12s ease-in;
+    font-weight: bold;
   }

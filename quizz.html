@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Iot</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.41/vue.global.min.js"></script>
+  <script src='js/maplibre-gl.js'></script>
+  <link href='maplibre-gl.css' rel='stylesheet' />
+
+</head>
+
+<body>
+  <div id='map'></div>
+  <main id="app">
+    <div class="quizz-container">
+      <h2 class="question">{{ question }}</h2>
+      <div class="answer-container">
+        <div class="answer" v-for="answer in answers" :key="answer">{{ answer }}</div>
+      </div>
+      <button class="answer-submit" @click="insertNextQuestion">Commencer</button>
+    </div>
+  </main>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Map
+    let map = new maplibregl.Map({
+      container: 'map', // container id
+      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
+      center: [0, 0], // starting position [lng, lat]
+      zoom: 1 // starting zoom
+    });
+
+    // Vue
+    const { createApp } = Vue
+    createApp({
+      data: () => ({
+        infos: undefined,
+        question: 'Êtes vous prêts ?',
+        answers: ['Oui', 'Non', 'Peut-être', 'Peut-être pas'],
+        longitude: 0,
+        latitude: 0,
+        titlePopup: 'Quel est le nom de ce pays ?',
+        counter: 0,
+        markers: [],
+        storage: [
+          {
+            number: 1,
+            name: 'France',
+            coords: [5.026824428081838, 47.314551189358205],
+            question: 'Quel est le nom de cette région ?',
+            answer: 'Bourgogne-Franche-Comté',
+            answers: ['Bourgogne-Franche-Comté', 'Auvergne-Rhône-Alpes', 'Occitanie', 'Nouvelle-Aquitaine'],
+          },
+          {
+            number: 2,
+            name: 'Italie',
+            coords: [12.61795464907449, 42.55836090533169],
+            question: 'Quel est la spécialité de cette ville ?',
+            answer: 'Truffe noire',
+            answers: ['Jambon de Norcia', 'Truffe noire', 'Pesto', 'Parmesan'],
+          },
+          {
+            number: 3,
+            name: 'Chine',
+            coords: [122.82008054188914, 52.8562909503237],
+            question: 'Quel est le nom de cette région ?',
+            answer: 'Heilongjiang',
+            answers: ['Heilongjiang', 'Jilin', 'Liaoning', 'Shandong'],
+          },
+          {
+            number: 4,
+            name: 'Hawaii',
+            coords: [-155.5330412882434, 19.630411288775914],
+            question: 'Quel est le nom de l\'île ?',
+            answer: 'Hawaii',
+            answers: ['Hawaii', 'Oahu', 'Maui', 'Kauai'],
+          },
+          {
+            number: 5,
+            name: 'Saint-Hélène',
+            coords: [-5.693433146528342, -15.955138183125245],
+            question: 'Qui repose ici ?',
+            answer: 'Napoléon',
+            answers: ['Napoléon', 'Marie-Antoinette', 'Louis XVI', 'Louis XVIII'],
+          }
+        ]
+      }),
+      methods: {
+        addMapMarkers: function (name, coords) {
+          this.markers.push(new maplibregl.Marker()
+            .setLngLat(coords)
+            .setPopup(new maplibregl.Popup({ offset: 25 }) // add popups
+              .setHTML(`<h3>${name}</h3>`))
+            .addTo(map))
+        },
+        insertNextQuestion: function () {
+          this.markers.forEach(marker => marker.remove())
+          this.counter++;
+          const item = this.storage[this.counter - 1];
+          this.addMapMarkers(item.name, item.coords)
+          this.question = item.question;
+          this.answers = item.answers;
+        }
+      },
+      mounted() {
+        this.infos = JSON.parse(localStorage.getItem('infos'))
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
