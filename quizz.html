@@ -21,9 +21,10 @@
     <div class="quizz-container">
       <h2 class="question">{{ question }}</h2>
       <div class="answer-container">
-        <div class="answer" v-for="answer in answers" :key="answer">{{ answer }}</div>
+        <div class="answer" v-for="answer in answers" :key="answer" @click="setAnswer(answer)">{{ answer }}</div>
       </div>
-      <button class="answer-submit" @click="insertNextQuestion">Commencer</button>
+      <button class="answer-submit" @click="submitQuestion" v-if="!isStart && !isEnd">Suite</button>
+      <button class="answer-submit" @click="startQuizz" v-if="isStart">Commencer</button>
     </div>
   </main>
   <script src="js/app.js"></script>
@@ -42,7 +43,10 @@
     createApp({
       data: () => ({
         infos: undefined,
+        isStart: true,
+        isEnd: false,
         question: 'Êtes vous prêts ?',
+        answer: '',
         answers: ['Oui', 'Non', 'Peut-être', 'Peut-être pas'],
         longitude: 0,
         latitude: 0,
@@ -93,6 +97,13 @@
         ]
       }),
       methods: {
+        setAnswer: function (answer) {
+          this.answer = answer
+        },
+        startQuizz: function () {
+          this.insertNextQuestion();
+          this.isStart = false;
+        },
         addMapMarkers: function (name, coords) {
           this.markers.push(new maplibregl.Marker()
             .setLngLat(coords)
@@ -103,10 +114,24 @@
         insertNextQuestion: function () {
           this.markers.forEach(marker => marker.remove())
           this.counter++;
-          const item = this.storage[this.counter - 1];
-          this.addMapMarkers(item.name, item.coords)
-          this.question = item.question;
-          this.answers = item.answers;
+          console.log(this.counter, this.storage.length);
+          if (this.storage.length > this.counter) {
+            const item = this.storage[this.counter - 1];
+            this.addMapMarkers(item.name, item.coords)
+            this.question = item.question;
+            this.answers = item.answers;
+          } else {
+            this.isEnd = true;
+            this.question = 'Bravo ! Vous avez terminé le quizz !';
+            this.answers = [];
+          }
+        },
+        submitQuestion: function () {
+          this.answers = [];
+          if (this.answer === this.storage[this.counter - 1].answer) {
+            this.insertNextQuestion();
+          }
+            
         }
       },
       mounted() {
