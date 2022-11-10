@@ -20,7 +20,7 @@ function initUI() {
             },
         },
         signInFlow: "popup",
-        signInSuccessUrl: "app.html",
+        signInSuccessUrl: "application.html",
         signInOptions: [
             firebase.auth.EmailAuthProvider.PROVIDER_ID,
         ],
