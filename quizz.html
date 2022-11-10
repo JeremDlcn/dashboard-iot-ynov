@@ -23,7 +23,8 @@
       <div class="answer-container">
         <div class="answer" v-for="answer in answers" :key="answer" @click="setAnswer(answer)">{{ answer }}</div>
       </div>
-      <button class="answer-submit" @click="submitQuestion" v-if="!isStart && !isEnd && isButton">Suite</button>
+      <button class="answer-submit" v-if="isEnd">Voir les statistiques</button>
+      <button class="answer-submit submit-question" :class="classObject" @click="submitQuestion" v-if="!isStart && !isEnd && isButton">Suite</button>
       <button class="answer-submit" @click="startQuizz" v-if="isStart && isButton">Commencer</button>
     </div>
   </main>
@@ -46,6 +47,7 @@
         isStart: true,
         isEnd: false,
         isButton: true,
+        isSelect: false,
         question: 'Êtes vous prêts ?',
         answer: '',
         answers: [],
@@ -101,6 +103,7 @@
       methods: {
         setAnswer: function (answer) {
           this.answer = answer;
+          this.isSelect = true;
         },
         startQuizz: function () {
           this.insertNextQuestion();
@@ -134,12 +137,14 @@
           if (this.answer === this.storage[this.counter - 1].answer) {
             this.score++;
             this.insertNextQuestion();
+            this.isSelect = false;
           } else {
             this.question = 'Mauvaise réponse !';
             this.isButton = false;
             setTimeout(() => {
               this.insertNextQuestion();
               this.isButton = true;
+              this.isSelect = false;
             }, 1000);
           }
 
@@ -148,7 +153,7 @@
       computed: {
         classObject() {
           return {
-            'select': this.isSelect
+            'select': this.isSelect,
           }
         }
       },

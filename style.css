@@ -191,3 +191,10 @@ a {
     transition: .12s ease-in;
     font-weight: bold;
   }
+
+  .submit-question {
+    background-color: #ddd;
+  }
+  .select {
+    background-color: var(--accent-color);
+  }
