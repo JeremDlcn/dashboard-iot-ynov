@@ -23,7 +23,7 @@
       <div class="answer-container">
         <div class="answer" v-for="answer in answers" :key="answer" @click="setAnswer(answer)">{{ answer }}</div>
       </div>
-      <button class="answer-submit" v-if="isEnd">Voir les statistiques</button>
+      <button class="answer-submit" v-if="isEnd" @click="redirectToStats">Voir les statistiques</button>
       <button class="answer-submit submit-question" :class="classObject" @click="submitQuestion" v-if="!isStart && !isEnd && isButton">Suite</button>
       <button class="answer-submit" @click="startQuizz" v-if="isStart && isButton">Commencer</button>
     </div>
@@ -53,11 +53,10 @@
         answers: [],
         longitude: 0,
         latitude: 0,
-        titlePopup: 'Quel est le nom de ce pays ?',
         counter: 0,
         markers: [],
         score: 0,
-        storage: [
+        storageAnswer: [
           {
             number: 1,
             name: 'France',
@@ -70,9 +69,9 @@
             number: 2,
             name: 'Italie',
             coords: [12.61795464907449, 42.55836090533169],
-            question: 'Quel est la spécialité de cette ville ?',
-            answer: 'Truffe noire',
-            answers: ['Jambon de Norcia', 'Truffe noire', 'Pesto', 'Parmesan'],
+            question: 'Quel est le nom de ce pays ?',
+            answer: 'Italie',
+            answers: ['Italie', 'France', 'Espagne', 'Allemagne'],
           },
           {
             number: 3,
@@ -101,6 +100,9 @@
         ]
       }),
       methods: {
+        redirectToStats: function () {
+          window.location.href = 'stats.html'
+        },
         setAnswer: function (answer) {
           this.answer = answer;
           this.isSelect = true;
@@ -121,20 +123,20 @@
         insertNextQuestion: function () {
           this.markers.forEach(marker => marker.remove())
           this.counter++;
-          if (this.storage.length >= this.counter) {
-            const item = this.storage[this.counter - 1];
+          if (this.storageAnswer.length >= this.counter) {
+            const item = this.storageAnswer[this.counter - 1];
             this.addMapMarkers(item.name, item.coords)
             this.question = item.question;
             this.answers = item.answers;
           } else {
             this.isEnd = true;
-            this.question = `Bravo ! Vous avez terminé le quizz ! ${this.score} bonnes réponses sur ${this.storage.length}`;
+            this.question = `Bravo ! Vous avez terminé le quizz ! ${this.score} bonnes réponses sur ${this.storageAnswer.length}`;
             this.answers = [];
           }
         },
         submitQuestion: function () {
           this.answers = [];
-          if (this.answer === this.storage[this.counter - 1].answer) {
+          if (this.answer === this.storageAnswer[this.counter - 1].answer) {
             this.score++;
             this.insertNextQuestion();
             this.isSelect = false;
@@ -158,7 +160,7 @@
         }
       },
       mounted() {
-        this.infos = JSON.parse(localStorage.getItem('infos'))
+        this.infos = JSON.parse(localstorageAnswer.getItem('infos'))
       }
     }).mount('#app')
   </script>
