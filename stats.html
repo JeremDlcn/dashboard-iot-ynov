@@ -10,105 +10,94 @@
   <link rel="stylesheet" href="style.css">
   <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.41/vue.global.min.js"></script>
-  <script src='js/maplibre-gl.js'></script>
-  <link href='maplibre-gl.css' rel='stylesheet' />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
 </head>
 
 <body>
-  <div id='map'></div>
   <main id="app">
     <a href="/quizz.html" class="quizz-button button-91">Accéder au quizz</a>
+    <canvas id="chart" ref="chart" width="400" height="400"></canvas>
   </main>
   <script src="js/app.js"></script>
 
   <script>
-    // Map
-    let map = new maplibregl.Map({
-      container: 'map', // container id
-      style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL',
-      center: [0, 0], // starting position [lng, lat]
-      zoom: 1 // starting zoom
-    });
-
     // Vue
     const { createApp } = Vue
     createApp({
       data: () => ({
-        infos: undefined,
-        input: '',
-        longitude: 0,
-        latitude: 0,
-        titlePopup: 'Création d\'un marqueur',
-        IsPopupOpen: false,
-        heads: ['Number', 'Name', 'Date', 'Contrôles'],
-        markers: [],
-        storage: [
-          {
-            number: 1,
-            name: 'D3',
-            date: '2020-11-26',
-            coords: [5.026824428081838, 47.314551189358205]
-          },
-          // {
-          //   number: 2,
-          //   name: 'Robot',
-          //   date: '2020-11-26',
-          //   coords: [6.48757484232033, 46.392316983354625]
-          // },
-          // {
-          //   number: 3,
-          //   name: 'Appareil',
-          //   date: '2020-11-26',
-          //   coords: [5.371247778419813, 43.28408274884388]
-          // }
-        ]
+        dataChart: [],
       }),
       methods: {
-        addMapMarkers: function (name, coords) {
-          this.markers.push(new maplibregl.Marker()
-            .setLngLat(coords)
-            .setPopup(new maplibregl.Popup({ offset: 25 }) // add popups
-              .setHTML(`<h3>${name}</h3>`))
-            .addTo(map))
-        },
-        deleteMarker: function (id) {
-          this.storage = this.storage.filter(item => item.number !== id)
-          this.markers[id - 1].remove()
-          this.updateData();
-        },
-        openPopup: function () {
-          this.IsPopupOpen = true;
-        },
-        createMarker: function () {
-          this.storage.push({
-            number: this.storage.length + 1,
-            name: this.input,
-            date: new Date().toISOString().slice(0, 10),
-            coords: [this.longitude, this.latitude]
-          })
+        getStats: function () {
+          const dtch = JSON.parse(localStorage.getItem('score'));
+          //count number of occurence by number
+          const count = dtch.reduce((acc, curr) => {
+            if (typeof acc[curr] == 'undefined') {
+              acc[curr] = 1;
+            } else {
+              acc[curr] += 1;
+            }
+            return acc;
+          }, {});
 
-          this.addMapMarkers(this.input, [this.longitude, this.latitude])
 
-          this.IsPopupOpen = false;
-          this.updateData();
-        },
-        getData: function () {
-          this.storage = JSON.parse(localStorage.getItem('storage'))
-          this.storage.forEach(item => {
-            this.addMapMarkers(item.name, item.coords)
-          })
-        },
-        updateData: function () {
-          localStorage.setItem('storage', JSON.stringify(this.storage))
+          for (let i = 0; i < 5; i++) {
+            if (typeof count[i] == 'undefined') {
+              count[i] = 0;
+            }
+          }
+
+          const arr = Object.keys(count).map((key) => {
+            return count[key];
+          });
+
+          const arr2 = arr.reverse();
+          console.log(arr);
+
+          this.dataChart = arr2;
         }
       },
       mounted() {
-        if (localStorage.getItem('storage') === null) {
-          localStorage.setItem('storage', JSON.stringify(this.storage))
-        }
-        this.getData();
         this.infos = JSON.parse(localStorage.getItem('infos'))
+        this.getStats();
+
+        const ctx = this.$refs.chart.getContext('2d');
+        const myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['5/5', '4/5', '3/5', '2/5', '1/5'],
+            datasets: [{
+              label: 'Statistiques du quizz',
+              data: this.dataChart,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+
       }
     }).mount('#app')
   </script>

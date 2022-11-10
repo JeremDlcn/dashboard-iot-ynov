@@ -132,6 +132,13 @@
             this.isEnd = true;
             this.question = `Bravo ! Vous avez terminé le quizz ! ${this.score} bonnes réponses sur ${this.storageAnswer.length}`;
             this.answers = [];
+            if (localStorage.getItem('score') === null) {
+              localStorage.setItem('score', JSON.stringify([]));
+            }
+            const score = JSON.parse(localStorage.getItem('score'));
+            score.push(this.score);
+            localStorage.setItem('score', JSON.stringify(score));
+          
           }
         },
         submitQuestion: function () {
@@ -160,7 +167,7 @@
         }
       },
       mounted() {
-        this.infos = JSON.parse(localstorageAnswer.getItem('infos'))
+        this.infos = JSON.parse(localstorage.getItem('infos'))
       }
     }).mount('#app')
   </script>
