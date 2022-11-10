@@ -2,7 +2,7 @@ const staticDashboard = "dashboard-v1";
 const assets = [
     "/index.html",
     "/style.css",
-    "/js/auth.js",
+    "/js/authentication.js",
     "/js/app.js",
     "/logo.png",
 ];
